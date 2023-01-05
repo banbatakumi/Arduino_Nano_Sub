@@ -3,28 +3,28 @@
 
 Pixy2I2C pixy;
 
-#define TRIG_ECHO_PIN 14
-#define DISTABCE_RC 0.6
-#define LED_PIN 13
+#define RED_PIN 9
+#define BLUE_PIN 6
+#define GREEN_PIN 5
 
-uint16_t pre_distance, distance, duration;
+void rgb_led(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0);
+
+int currentTime, LEDTimer, count;
 
 void setup() {
-      Serial.begin(19200);
-      pixy.init();
-
-      pinMode(LED_PIN, OUTPUT);
-      for (uint8_t count = 0; count <= 10; count++) {
-            digitalWrite(LED_PIN, HIGH);
+      for (uint8_t count = 0; count < 10; count++) {
+            rgb_led(0, 255, 0);
             delay(100);
-            digitalWrite(LED_PIN, LOW);
+            rgb_led(0, 0, 0);
             delay(100);
       }
+      Serial.begin(19200);
+      pixy.init();
 }
-
 void (*resetFunc)(void) = 0;
 
 void loop() {
+      char get_command = 0;
       int16_t yellow_angle = 0, blue_angle = 0, yellow_wide = 0, blue_wide = 0, old_yellow_wide = 0, old_blue_wide = 0;
 
       pixy.ccc.getBlocks();
@@ -42,29 +42,45 @@ void loop() {
                   }
             }
       }
-
-      pinMode(TRIG_ECHO_PIN, OUTPUT);
-      digitalWrite(TRIG_ECHO_PIN, LOW);
-      delayMicroseconds(2);
-      digitalWrite(TRIG_ECHO_PIN, HIGH);
-      delayMicroseconds(10);
-      digitalWrite(TRIG_ECHO_PIN, LOW);
-
-      pinMode(TRIG_ECHO_PIN, INPUT);
-      duration = pulseIn(TRIG_ECHO_PIN, HIGH);   // 往復にかかった時間が返却される[マイクロ秒]
-      if (duration > 0) {
-            duration /= 2;   // 往路にかかった時間
-            distance = duration * 340.000 * 100.000 / 1000000.000;
-            distance = distance * (1 - DISTABCE_RC) + pre_distance * DISTABCE_RC;
-            pre_distance = distance;
-            if (distance > 255) distance = 255;
-      }
-
       Serial.write('a');
       Serial.write(yellow_angle);
       Serial.write(blue_angle);
-      Serial.write(distance);
       Serial.flush();
 
-      if (Serial.read() == 'a') resetFunc();   // call reset
+      if (Serial.available()) get_command = Serial.read();
+      if (get_command == 'a') {
+            resetFunc();   // call reset
+      } else if (get_command == 'b') {
+            for (uint8_t count = 0; count < 10; count++) {
+                  rgb_led(255, 0, 255);
+                  delay(100);
+                  rgb_led(0, 0, 0);
+                  delay(100);
+            }
+      } else if (get_command == 'c') {
+            for (uint8_t count = 0; count < 10; count++) {
+                  rgb_led(0, 0, 255);
+                  delay(100);
+                  rgb_led(0, 0, 0);
+                  delay(100);
+            }
+      }
 }
+
+void rgb_led(uint8_t red, uint8_t green, uint8_t blue) {
+      analogWrite(RED_PIN, red);
+      analogWrite(GREEN_PIN, green);
+      analogWrite(BLUE_PIN, blue);
+} /*
+             for (uint16_t count = 0; count <= 255; count++) {
+                   rgb_led(count, 255 - count, 0);
+                   delay(2);
+             }
+             for (uint16_t count = 0; count <= 255; count++) {
+                   rgb_led(255 - count, 0, count);
+                   delay(2);
+             }
+             for (uint16_t count = 0; count <= 255; count++) {
+                   rgb_led(0, count, 255 - count);
+                   delay(2);
+             }*/
