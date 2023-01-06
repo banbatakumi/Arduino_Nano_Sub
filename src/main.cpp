@@ -51,19 +51,21 @@ void loop() {
       if (get_command == 'a') {
             resetFunc();   // call reset
       } else if (get_command == 'b') {
-            for (uint8_t count = 0; count < 10; count++) {
+            for (uint8_t count = 0; count < 12; count++) {
                   rgb_led(255, 0, 255);
                   delay(100);
                   rgb_led(0, 0, 0);
                   delay(100);
             }
       } else if (get_command == 'c') {
-            for (uint8_t count = 0; count < 10; count++) {
+            for (uint8_t count = 0; count < 12; count++) {
                   rgb_led(0, 0, 255);
                   delay(100);
                   rgb_led(0, 0, 0);
                   delay(100);
             }
+      }else{
+
       }
 }
 
@@ -71,16 +73,4 @@ void rgb_led(uint8_t red, uint8_t green, uint8_t blue) {
       analogWrite(RED_PIN, red);
       analogWrite(GREEN_PIN, green);
       analogWrite(BLUE_PIN, blue);
-} /*
-             for (uint16_t count = 0; count <= 255; count++) {
-                   rgb_led(count, 255 - count, 0);
-                   delay(2);
-             }
-             for (uint16_t count = 0; count <= 255; count++) {
-                   rgb_led(255 - count, 0, count);
-                   delay(2);
-             }
-             for (uint16_t count = 0; count <= 255; count++) {
-                   rgb_led(0, count, 255 - count);
-                   delay(2);
-             }*/
+}
