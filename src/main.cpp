@@ -12,12 +12,26 @@ void rgb_led(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0);
 int currentTime, LEDTimer, count;
 
 void setup() {
-      for (uint8_t count = 0; count < 10; count++) {
+      for (uint8_t count = 0; count < 5; count++) {
+            /*
             rgb_led(0, 255, 0);
             delay(100);
             rgb_led(0, 0, 0);
-            delay(100);
+            delay(100);*/
+            for (uint16_t count = 0; count <= 255; count++) {
+                  rgb_led(count, 255 - count, 0);
+                  delay(1);
+            }
+            for (uint16_t count = 0; count <= 255; count++) {
+                  rgb_led(255 - count, 0, count);
+                  delay(1);
+            }
+            for (uint16_t count = 0; count <= 255; count++) {
+                  rgb_led(0, count, 255 - count);
+                  delay(1);
+            }
       }
+      rgb_led(0, 0, 0);
       Serial.begin(19200);
       pixy.init();
 }
