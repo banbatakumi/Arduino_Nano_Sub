@@ -12,7 +12,7 @@ void rgb_led(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0);
 int currentTime, LEDTimer, count;
 
 void setup() {
-      for (uint8_t count = 0; count < 5; count++) {
+      for (uint8_t count = 0; count < 15; count++) {
             rgb_led(0, 255, 0);
             delay(100);
             rgb_led(0, 0, 0);
